@@ -24,13 +24,13 @@ The project features a premium cyberpunk-themed **Cyber Command Center** dashboa
 ```mermaid
 graph TD
     %% Define components
-    subgraph Target Host (Simulated or Real Linux via SSH)
+    subgraph "Target Host (Simulated or Real Linux via SSH)"
         Logs[(Log Files: auth.log, access.log)]
         OSState[OS State: Processes, File Modifications, Sockets]
         Firewall[Firewall: iptables / ufw]
     end
 
-    subgraph Cyber Agent Pipeline (Python Asyncio)
+    subgraph "Cyber Agent Pipeline (Python Asyncio)"
         Broker[Event Broker: Async Pub/Sub Queue]
         Scanner[Log Scanner Agent]
         Classifier[Threat Classifier Agent]
@@ -39,7 +39,7 @@ graph TD
         Coordinator[Crew Coordinator Agent]
     end
 
-    subgraph Cyber Command Center (Web UI)
+    subgraph "Cyber Command Center (Web UI)"
         Dashboard[Real-time Web Dashboard]
         ChatInterface[ChatGPT-style Operator Chat]
     end
