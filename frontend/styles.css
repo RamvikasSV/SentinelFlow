@@ -282,7 +282,11 @@ body {
         "left middle" !important;
 }
 .workspace-layout.snap-ide-stack .main-left { display: flex !important; }
-.workspace-layout.snap-ide-stack .main-middle { display: flex !important; }
+.workspace-layout.snap-ide-stack .main-middle { 
+    display: flex !important; 
+    flex-direction: row !important;
+    gap: 16px !important;
+}
 .workspace-layout.snap-ide-stack .main-right { display: flex !important; }
 
 /* 4-Quadrant style: top-left logs, top-right chat, bottom workspace spans full width */
@@ -296,7 +300,11 @@ body {
         "middle middle" !important;
 }
 .workspace-layout.snap-quad .main-left { display: flex !important; }
-.workspace-layout.snap-quad .main-middle { display: flex !important; }
+.workspace-layout.snap-quad .main-middle { 
+    display: flex !important; 
+    flex-direction: row !important;
+    gap: 16px !important;
+}
 .workspace-layout.snap-quad .main-right { display: flex !important; }
 
 
