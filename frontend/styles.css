@@ -88,11 +88,11 @@ body {
 }
 
 .header-logo .v-tag {
-    font-size: 11px;
+    font-size: 12px;
     font-family: var(--font-mono);
     color: var(--color-text-muted);
     border: 1px solid var(--color-text-muted);
-    padding: 1px 4px;
+    padding: 2px 6px;
     border-radius: 4px;
     vertical-align: middle;
 }
@@ -118,9 +118,9 @@ body {
 .stat-badge {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 6px 12px;
+    padding: 8px 14px;
     border-radius: 6px;
-    font-size: 12px;
+    font-size: 13.5px;
     font-family: var(--font-mono);
     display: flex;
     align-items: center;
@@ -137,9 +137,9 @@ body {
 }
 
 .status-indicator {
-    padding: 2px 6px;
+    padding: 3px 8px;
     border-radius: 4px;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
 }
 
@@ -318,9 +318,9 @@ body {
     background: rgba(0, 242, 254, 0.05);
     border: 1px solid rgba(0, 242, 254, 0.25) !important;
     color: var(--color-cyan) !important;
-    padding: 6px 12px !important;
+    padding: 8px 14px !important;
     border-radius: 6px;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
 }
 
@@ -350,7 +350,7 @@ body {
 }
 
 .snap-flyout-title {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 1px;
     color: var(--color-text-muted);
@@ -391,7 +391,7 @@ body {
 }
 
 .snap-label {
-    font-size: 9.5px;
+    font-size: 11.5px;
     font-weight: 700;
     color: #a1b0cb;
 }
@@ -594,16 +594,16 @@ body {
     outline: none;
     color: var(--color-text-muted);
     font-family: var(--font-sans);
-    font-size: 10.5px;
+    font-size: 12.5px;
     font-weight: 700;
     letter-spacing: 0.5px;
-    padding: 8px 10px;
+    padding: 10px 14px;
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
     flex: 1;
     justify-content: center;
     white-space: nowrap;
@@ -655,7 +655,7 @@ body {
 }
 
 .sidebar-sub-panel h3 {
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.5px;
     color: var(--color-text);
@@ -714,9 +714,9 @@ body {
 }
 
 .section-desc {
-    font-size: 10.5px;
+    font-size: 12.5px;
     color: var(--color-text-muted);
-    line-height: 1.4;
+    line-height: 1.5;
     margin: 6px 0 10px 0;
 }
 
@@ -727,10 +727,9 @@ body {
 }
 
 .vertical-buttons .btn {
-    padding: 12px;
-    font-size: 11px;
+    padding: 12px 20px;
+    font-size: 13px;
     justify-content: flex-start;
-    padding-left: 20px;
 }
 
 .flex-grow-firewall {
@@ -797,7 +796,7 @@ body {
 }
 
 .panel-header h2 {
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 700;
     letter-spacing: 1px;
     color: var(--color-text);
@@ -807,7 +806,7 @@ body {
 }
 
 .panel-subtitle {
-    font-size: 10px;
+    font-size: 12px;
     font-family: var(--font-mono);
     color: var(--color-text-muted);
 }
@@ -839,8 +838,8 @@ body {
     padding: 12px;
     overflow-y: auto;
     font-family: var(--font-mono);
-    font-size: 11px;
-    line-height: 1.5;
+    font-size: 12.5px;
+    line-height: 1.6;
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
 }
 
@@ -893,7 +892,7 @@ body {
 }
 
 .help-text {
-    font-size: 9px;
+    font-size: 11px;
     color: var(--color-text-muted);
 }
 
@@ -907,10 +906,10 @@ body {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
     color: var(--color-text);
-    padding: 10px;
+    padding: 11px 14px;
     border-radius: 6px;
     font-family: var(--font-sans);
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     display: flex;
@@ -984,7 +983,7 @@ body {
 
 .node-label {
     fill: var(--color-text);
-    font-size: 8px;
+    font-size: 9.5px;
     font-weight: 700;
     text-anchor: middle;
     letter-spacing: 0.5px;
@@ -992,7 +991,7 @@ body {
 }
 
 .node-status {
-    font-size: 7px;
+    font-size: 8.5px;
     font-family: var(--font-mono);
     text-anchor: middle;
     pointer-events: none;
@@ -1062,26 +1061,26 @@ body {
     background: rgba(255, 255, 255, 0.015);
     border: 1px solid rgba(255, 255, 255, 0.04);
     border-radius: 6px;
-    padding: 8px 12px;
+    padding: 10px 14px;
     display: flex;
     flex-direction: column;
     gap: 4px;
-    font-size: 11px;
-    line-height: 1.4;
+    font-size: 13px;
+    line-height: 1.45;
     animation: fadeInSlide 0.3s ease forwards;
 }
 
 .thought-item .time {
     font-family: var(--font-mono);
     color: var(--color-text-muted);
-    font-size: 9px;
+    font-size: 11px;
 }
 
 .agent-tag {
-    font-size: 8px;
+    font-size: 10.5px;
     font-weight: 800;
     letter-spacing: 0.5px;
-    padding: 1px 5px;
+    padding: 2px 6px;
     border-radius: 3px;
     align-self: flex-start;
     font-family: var(--font-mono);
@@ -1127,9 +1126,9 @@ body {
 .chat-bubble {
     max-width: 85%;
     border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 11px;
-    line-height: 1.45;
+    padding: 10px 14px;
+    font-size: 13px;
+    line-height: 1.5;
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -1154,7 +1153,7 @@ body {
 
 .bubble-sender {
     font-family: var(--font-mono);
-    font-size: 8px;
+    font-size: 10.5px;
     font-weight: 700;
     color: var(--color-cyan);
     display: flex;
@@ -1164,7 +1163,7 @@ body {
 }
 
 .avatar-icon {
-    font-size: 10px;
+    font-size: 12.5px;
 }
 
 .chat-bubble.user .bubble-sender {
@@ -1178,10 +1177,10 @@ body {
 }
 
 /* Styles for MD rendering inside bubble */
-.bubble-content h3 { font-size: 12px; font-weight: 700; margin: 8px 0 4px 0; color: #fff; }
+.bubble-content h3 { font-size: 14px; font-weight: 700; margin: 8px 0 4px 0; color: #fff; }
 .bubble-content ul { padding-left: 14px; margin: 4px 0; }
 .bubble-content li { margin-bottom: 2px; }
-.bubble-content code { font-family: var(--font-mono); background: rgba(0,0,0,0.3); padding: 1px 3px; border-radius: 3px; font-size: 10px; }
+.bubble-content code { font-family: var(--font-mono); background: rgba(0,0,0,0.3); padding: 1px 3px; border-radius: 3px; font-size: 12px; }
 .bubble-content p { margin-bottom: 6px; }
 
 /* Suggestions chips */
@@ -1199,8 +1198,8 @@ body {
     border: 1px solid rgba(0, 242, 254, 0.15);
     color: var(--color-cyan);
     border-radius: 12px;
-    padding: 4px 10px;
-    font-size: 9.5px;
+    padding: 6px 12px;
+    font-size: 11.5px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -1241,7 +1240,7 @@ body {
 
 .input-prompt {
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: 14px;
     color: var(--color-cyan);
     font-weight: 700;
     user-select: none;
@@ -1254,7 +1253,7 @@ body {
     outline: none;
     color: #fff;
     padding: 12px 12px 12px 6px;
-    font-size: 11.5px;
+    font-size: 13.5px;
     font-family: var(--font-sans);
 }
 
@@ -1335,10 +1334,10 @@ body {
 .blocked-item {
     background: rgba(239, 68, 68, 0.03);
     border: 1px solid rgba(239, 68, 68, 0.15);
-    padding: 6px 12px;
+    padding: 8px 12px;
     border-radius: 6px;
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 13px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1352,14 +1351,14 @@ body {
 
 .blocked-item .time-ago {
     color: var(--color-text-muted);
-    font-size: 9px;
+    font-size: 11px;
 }
 
 .blocked-item .unblock-action {
     background: none;
     border: none;
     color: var(--color-cyan);
-    font-size: 9px;
+    font-size: 11px;
     cursor: pointer;
     font-weight: bold;
 }
@@ -1371,7 +1370,7 @@ body {
 
 .empty-list-placeholder {
     color: var(--color-text-muted);
-    font-size: 11px;
+    font-size: 12.5px;
     text-align: center;
     padding: 16px;
     font-style: italic;
@@ -1402,14 +1401,14 @@ body {
     border-collapse: separate;
     border-spacing: 0;
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 12px;
     text-align: left;
 }
 
 .monitor-table th {
     background: #0c1225;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    padding: 6px 10px;
+    padding: 8px 12px;
     color: var(--color-text-muted);
     font-weight: 600;
     position: sticky;
@@ -1418,7 +1417,7 @@ body {
 }
 
 .monitor-table td {
-    padding: 5px 10px;
+    padding: 7px 12px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.02);
     color: #cbd5e1;
 }
@@ -1556,7 +1555,7 @@ pre {
 }
 pre code {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 12px;
     color: #cbd5e1;
 }
 
@@ -1572,7 +1571,7 @@ pre code {
     border-radius: 6px;
     color: #fff;
     padding: 8px 12px;
-    font-size: 11px;
+    font-size: 13px;
     font-family: var(--font-sans);
     transition: all 0.25s ease;
 }
@@ -1590,12 +1589,12 @@ pre code {
 .user-item {
     background: rgba(255, 255, 255, 0.015);
     border: 1px solid rgba(255, 255, 255, 0.04);
-    padding: 10px 12px;
+    padding: 12px 14px;
     border-radius: 6px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 11px;
+    font-size: 13px;
     animation: fadeInSlide 0.25s ease forwards;
 }
 .user-info {
@@ -1610,18 +1609,18 @@ pre code {
 .user-email {
     font-family: var(--font-mono);
     color: var(--color-cyan);
-    font-size: 10px;
+    font-size: 12px;
     text-shadow: 0 0 5px rgba(0, 242, 254, 0.2);
 }
 .user-meta {
-    font-size: 9px;
+    font-size: 11px;
     color: var(--color-text-muted);
 }
 .btn-delete {
     background: none;
     border: none;
     color: var(--color-red);
-    font-size: 9.5px;
+    font-size: 11.5px;
     cursor: pointer;
     font-weight: bold;
     padding: 4px;
