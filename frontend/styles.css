@@ -232,7 +232,7 @@ body {
 .workspace-layout.snap-3-col .main-middle { display: flex !important; }
 .workspace-layout.snap-3-col .main-right { display: flex !important; }
 
-/* 50-50 Logs & Chat (Workspace hidden) */
+/* 50-50 Logs & Agents (Workspace hidden) */
 .workspace-layout.snap-50-50 {
     --col-left-size: 1fr;
     --col-middle-size: 0px;
@@ -245,7 +245,7 @@ body {
 .workspace-layout.snap-50-50 .main-middle { display: none !important; }
 .workspace-layout.snap-50-50 .main-right { display: flex !important; }
 
-/* Focused Workspace & Chat (Logs hidden) */
+/* Focused Workspace & Agents (Logs hidden) */
 .workspace-layout.snap-work-chat {
     --col-left-size: 0px;
     --col-middle-size: 1.2fr;
