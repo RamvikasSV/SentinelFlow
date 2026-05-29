@@ -639,6 +639,7 @@ body {
     min-height: 0;
     flex-direction: column;
     gap: 16px;
+    overflow-y: auto;
 }
 
 .side-pane.active-pane {
