@@ -8,14 +8,14 @@ The project features a premium cyberpunk-themed **Cyber Command Center** dashboa
 
 ## 🚀 Key Features
 
-* **Multi-Agent Orchestration**: Five specialized agents (Log Scanner, Threat Classifier, Forensic Investigator, Response Agent, and Coordinator) collaborating asynchronously.
+* **Multi-Agent Orchestration**: Seven specialized agents collaborating asynchronously (Log Scanner, Threat Classifier, Forensic Investigator, Response Agent, Coordinator, Watchdog, and Forensic Notifier).
 * **Decoupled Architecture**: Built around an in-memory Pub/Sub Event Broker that keeps agents isolated, ensuring threat spikes never block log tailing.
 * **Flexible Target Adapters**: Runs in **Simulation Mode** (for quick local demos) or **Live SSH Mode** (remotely securing a real Linux VPS or local WSL2 container).
-* **Robust Safety Nets & Fallbacks**: 
-  - LLM timeouts/quota limits automatically fall back to rule-based heuristics.
-  - SSH blocking commands fallback from UFW rules to raw IPTables.
-  - Web shell uploads fallback from quarantining to direct deletion.
-* **Cyber Command Center**: A styled UI supporting collapsible column grids, active selection layouts, live agent state SVG mapping, and horizontal scrollable markdown tables inside the chat console.
+* **Multi-User Notification Registry**: Admin interface to dynamically register, list, and delete multiple email contacts. Resolves to persistent registry storage (`registered_users.json`).
+* **Automated PDF Reports**: Generates a styled forensic PDF summary (using `reportlab`) enriched with geolocation mapping and automatically emails it via SMTP SSL.
+* **Smart Alert Debouncing**: Intelligent 30-second deduplication cache preventing SMTP email alert storms during rapid log spikes.
+* **Real-time Watchdog**: Passive filesystem observer scanning Windows/Linux hotspots for malware indicators.
+* **Cyber Command Center**: Pinned three-column grid layouts with collapsible sidebars, embedded ChatGPT console, live flowchart node state animations, and scrollable markdown tables.
 
 ---
 
@@ -70,7 +70,9 @@ graph TD
 2. **🧠 Threat Classifier Agent**: Utilizes Google Gemini LLM API (enforcing strict Pydantic schemas) to analyze attack vectors, grading threat severity and confidence.
 3. **🕵️‍♂️ Forensic Investigator Agent**: Connects via SSH to query active system socket states, file changes, and running process statistics.
 4. **🚫 Response Agent**: Automatically enforces firewall drops (`ufw deny`), kills malicious process PIDs, and quarantines web shells.
-5. **🤖 Crew Coordinator Agent**: Bridges the administrator directly to the agent queue via a chat console, executing commands (e.g. *status*, *unblock <IP>*, *show processes*) written in natural language.
+5. **🛡️ Watchdog Filesystem Agent**: Actively monitors malware hotspots (directories and registries) on the host machine.
+6. **📧 Forensic Notifier Agent**: Compiles forensic findings, attaches a generated PDF report, and emails it to all registered admins.
+7. **🤖 Crew Coordinator Agent**: Bridges the administrator directly to the agent queue via a chat console, executing commands (e.g. *status*, *unblock <IP>*, *show processes*) written in natural language.
 
 ---
 
@@ -120,5 +122,6 @@ SSH_KEY_PATH=
 ## 📂 Documentation
 
 Detailed setup guides, testing scenarios, and design specifications are stored inside the `/docs` folder:
+* **[Step-by-Step Developer Guide & Handbook](docs/DEVELOPER_GUIDE.md)**: Simple, domain-friendly guide explaining all cybersecurity concepts, folder maps, and presenting the project.
 * **[Technical Architecture & Build Guide](docs/PROJECT_GUIDE.md)**: Deep dive into Pub/Sub patterns, structured schemas, and adapter rationale.
 * **[User Setup & Walkthrough Guide](docs/walkthrough.md)**: Includes manual test steps for simulations (SSH brute force, web shell upload) and how to configure a **local WSL2 sandbox** without a credit card.
