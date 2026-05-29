@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Agent - Multi-Agent Incident Response Center</title>
+    <!-- Google Fonts: Inter for UI, Fira Code / JetBrains Mono for logs -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+</head>
+<body>
+    <div class="cyber-container">
+        <!-- Dashboard Header -->
+        <header class="cyber-header">
+            <div class="header-logo">
+                <span class="pulse-dot green"></span>
+                <h1>CYBER_AGENT <span class="v-tag">v1.0.0</span></h1>
+            </div>
+
+            <!-- Windows Snap-Assist Dynamic Layout Dropdown -->
+            <div class="layout-selector-container">
+                <button class="btn btn-layout" onclick="toggleSnapFlyout(event)">
+                    📐 LAYOUTS
+                </button>
+                <div id="snap-flyout" class="snap-flyout-menu">
+                    <div class="snap-flyout-title">CHOOSE SNAP LAYOUT</div>
+                    <div class="snap-grid-options">
+                        
+                        <!-- Option 1: 3 Columns -->
+                        <div class="snap-option-card" onclick="applySnapLayout('3-col')" title="Three Column Grid">
+                            <div class="snap-preview preview-3-col">
+                                <div class="preview-box p-left"></div>
+                                <div class="preview-box p-middle"></div>
+                                <div class="preview-box p-right"></div>
+                            </div>
+                            <span class="snap-label">Standard</span>
+                        </div>
+
+                        <!-- Option 2: 50/50 Logs & Chat -->
+                        <div class="snap-option-card" onclick="applySnapLayout('50-50')" title="50/50 Logs & Chat">
+                            <div class="snap-preview preview-50-50">
+                                <div class="preview-box p-left"></div>
+                                <div class="preview-box p-right"></div>
+                            </div>
+                            <span class="snap-label">Logs & Chat</span>
+                        </div>
+
+                        <!-- Option 3: Focused Workspace & Chat -->
+                        <div class="snap-option-card" onclick="applySnapLayout('work-chat')" title="Workspace & Chat">
+                            <div class="snap-preview preview-work-chat">
+                                <div class="preview-box p-middle"></div>
+                                <div class="preview-box p-right"></div>
+                            </div>
+                            <span class="snap-label">Console & Chat</span>
+                        </div>
+
+                        <!-- Option 4: Logs & Workspace -->
+                        <div class="snap-option-card" onclick="applySnapLayout('logs-work')" title="Logs & Workspace">
+                            <div class="snap-preview preview-logs-work">
+                                <div class="preview-box p-left"></div>
+                                <div class="preview-box p-middle"></div>
+                            </div>
+                            <span class="snap-label">Logs & Console</span>
+                        </div>
+
+                        <!-- Option 5: IDE Stack (Left full height, right stacked) -->
+                        <div class="snap-option-card" onclick="applySnapLayout('ide-stack')" title="IDE Stack Layout">
+                            <div class="snap-preview preview-ide-stack">
+                                <div class="preview-box p-left"></div>
+                                <div class="preview-box-stack">
+                                    <div class="preview-box p-right"></div>
+                                    <div class="preview-box p-middle"></div>
+                                </div>
+                            </div>
+                            <span class="snap-label">IDE Stack</span>
+                        </div>
+
+                        <!-- Option 6: 4-Quadrant Grid (Middle panel split/expanded) -->
+                        <div class="snap-option-card" onclick="applySnapLayout('quad')" title="4-Quadrant Grid">
+                            <div class="snap-preview preview-quad">
+                                <div class="preview-box p-left"></div>
+                                <div class="preview-box p-right"></div>
+                                <div class="preview-box p-middle-full"></div>
+                            </div>
+                            <span class="snap-label">Quadrant</span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            
+            <div class="header-stats">
+                <div class="stat-badge">
+                    <span class="label">TARGET_MODE:</span>
+                    <span id="target-mode-val" class="val text-cyan">SIMULATION</span>
+                </div>
+                <div class="stat-badge">
+                    <span class="label">FIREWALL_BLOCKS:</span>
+                    <span id="blocked-count-val" class="val text-red">0</span>
+                </div>
+                <div class="stat-badge">
+                    <span class="label">CREW_STATUS:</span>
+                    <span class="val text-green">ARMED</span>
+                </div>
+                <div class="stat-badge connection">
+                    <span class="label">WEBSOCKET:</span>
+                    <span id="ws-status" class="status-indicator offline">DISCONNECTED</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace: 3-Column Hybrid Layout -->
+        <main class="workspace-layout">
+            <!-- Collapsed Panel Restore Buttons -->
+            <div id="restore-left-btn" class="restore-bar left-bar" onclick="toggleLeftPanel()" style="display: none;">
+                <span class="restore-icon">📟</span> LOGS
+            </div>
+            
+            <div id="restore-right-btn" class="restore-bar right-bar" onclick="toggleRightPanel()" style="display: none;">
+                <span class="restore-icon">💬</span> CHAT
+            </div>
+            
+            <!-- Column 1 (Left - Standalone): Live Terminal Logs -->
+            <section class="main-left glass-panel logs-terminal-panel">
+                <div class="panel-header" style="flex-direction: row; justify-content: space-between; align-items: center; display: flex; width: 100%;">
+                    <div>
+                        <h2>📟 TARGET HOST LOG STREAM</h2>
+                        <span class="panel-subtitle">auth.log & access.log</span>
+                    </div>
+                    <button class="panel-toggle-btn" onclick="toggleLeftPanel()" title="Collapse logs pane">◀</button>
+                </div>
+                <div class="terminal-container">
+                    <div id="log-terminal" class="terminal-output">
+                        <span class="term-line system-line">[SYSTEM] Terminal initialized. Waiting for log stream...</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Column 2 (Middle - Shiftable): Agents, Inspector, Attacks -->
+            <section class="main-middle glass-panel sidebar-container">
+                <div class="sidebar-header">
+                    <nav class="sidebar-nav">
+                        <button class="side-tab active" onclick="switchSideTab('agents')">🧠 AGENTS</button>
+                        <button class="side-tab" onclick="switchSideTab('inspector')">🔍 INSPECTOR</button>
+                        <button class="side-tab" onclick="switchSideTab('attacks')">⚡ ATTACKS & BLOCKS</button>
+                    </nav>
+                </div>
+
+                <div class="sidebar-content">
+                    <!-- Tab Pane 1: Agents Cognitive Pipeline & Thoughts -->
+                    <div id="side-pane-agents" class="side-pane active-pane">
+                        <!-- Flowchart -->
+                        <div class="sidebar-sub-panel agent-map-panel">
+                            <div class="panel-header">
+                                <h3>🧠 AGENT CREW COGNITIVE PIPELINE</h3>
+                            </div>
+                            <div class="agent-canvas-container">
+                                <svg class="agent-svg" viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <linearGradient id="cyan-purple" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="#00f2fe" />
+                                            <stop offset="100%" stop-color="#4facfe" />
+                                        </linearGradient>
+                                        <linearGradient id="purple-pink" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="#b92b27" />
+                                            <stop offset="100%" stop-color="#1565c0" />
+                                        </linearGradient>
+                                        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                            <feGaussianBlur stdDeviation="6" result="blur" />
+                                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                                        </filter>
+                                    </defs>
+                                    
+                                    <!-- Connection Lines -->
+                                    <path id="line-scanner-classifier" d="M 120 160 L 210 160" class="conn-line" />
+                                    <path id="line-classifier-forensics" d="M 250 120 L 250 80 Q 250 40 290 40 L 380 40" class="conn-line" />
+                                    <path id="line-forensics-response" d="M 400 80 L 400 200" class="conn-line" />
+                                    <path id="line-classifier-response" d="M 250 200 L 250 240 Q 250 280 290 280 L 380 280" class="conn-line" />
+                                    
+                                    <!-- Log Scanner Node (Source) -->
+                                    <g id="node-scanner" class="agent-node">
+                                        <circle cx="80" cy="160" r="35" class="node-circle" />
+                                        <text x="80" y="155" class="node-label">SCANNER</text>
+                                        <text x="80" y="172" class="node-status text-cyan">Tailing</text>
+                                    </g>
+
+                                    <!-- Threat Classifier Node -->
+                                    <g id="node-classifier" class="agent-node">
+                                        <circle cx="250" cy="160" r="35" class="node-circle" />
+                                        <text x="250" y="155" class="node-label">CLASSIFIER</text>
+                                        <text x="250" y="172" class="node-status text-purple">Listening</text>
+                                    </g>
+
+                                    <!-- Forensic Investigator Node -->
+                                    <g id="node-forensics" class="agent-node">
+                                        <circle cx="420" cy="40" r="35" class="node-circle" />
+                                        <text x="420" y="35" class="node-label">FORENSICS</text>
+                                        <text x="420" y="52" class="node-status text-blue">Standby</text>
+                                    </g>
+
+                                    <!-- Response Agent Node -->
+                                    <g id="node-response" class="agent-node">
+                                        <circle cx="420" cy="280" r="35" class="node-circle" />
+                                        <text x="420" y="275" class="node-label">RESPONSE</text>
+                                        <text x="420" y="292" class="node-status text-red">Ready</text>
+                                    </g>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Thinking Log -->
+                        <div class="sidebar-sub-panel thoughts-panel flex-grow-thoughts">
+                            <div class="panel-header">
+                                <h3>💭 CREW THINKING LOG</h3>
+                            </div>
+                            <div id="thought-log" class="thought-list">
+                                <div class="thought-item system">
+                                    <span class="agent-tag system">SYSTEM</span>
+                                    <span class="time">12:00:00</span>
+                                    <p class="thought-text">Connecting to cognitive pipeline endpoints...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Pane 2: Inspector (Processes & Sockets) -->
+                    <div id="side-pane-inspector" class="side-pane">
+                        <!-- Processes -->
+                        <div class="sidebar-sub-panel table-panel">
+                            <div class="panel-header">
+                                <h3>⚙️ ACTIVE PROCESS TABLE</h3>
+                            </div>
+                            <div class="table-container inspector-table-height">
+                                <table class="monitor-table">
+                                    <thead>
+                                        <tr>
+                                            <th>PID</th>
+                                            <th>USER</th>
+                                            <th>CPU %</th>
+                                            <th>MEM %</th>
+                                            <th>COMMAND</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="process-table-body">
+                                        <tr><td colspan="5" class="empty-table-placeholder">Initializing processes...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Sockets -->
+                        <div class="sidebar-sub-panel table-panel">
+                            <div class="panel-header">
+                                <h3>🔌 SOCKET CONNECTIONS</h3>
+                            </div>
+                            <div class="table-container inspector-table-height">
+                                <table class="monitor-table">
+                                    <thead>
+                                        <tr>
+                                            <th>PROTO</th>
+                                            <th>LOCAL ADDRESS</th>
+                                            <th>REMOTE ADDRESS</th>
+                                            <th>STATE</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="connections-table-body">
+                                        <tr><td colspan="4" class="empty-table-placeholder">Initializing sockets...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Pane 3: Attacks & Firewall Blocks -->
+                    <div id="side-pane-attacks" class="side-pane">
+                        <!-- Attack Buttons -->
+                        <div class="sidebar-sub-panel attacks-sub-panel">
+                            <div class="panel-header">
+                                <h3>⚡ ATTACK SIMULATION CONSOLE</h3>
+                            </div>
+                            <p class="section-desc">Launch simulation vectors to test the detection & firewall block trigger sequences.</p>
+                            <div class="simulator-buttons vertical-buttons">
+                                <button class="btn btn-attack" onclick="triggerSimulation('ssh_brute_force')">
+                                    <span class="icon">🔓</span> SSH Brute Force
+                                </button>
+                                <button class="btn btn-attack" onclick="triggerSimulation('web_shell')">
+                                    <span class="icon">🕸️</span> Web Shell Upload
+                                </button>
+                                <button class="btn btn-attack" onclick="triggerSimulation('sudo_hijack')">
+                                    <span class="icon">👑</span> Local Sudo Hijack
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Firewall blocks -->
+                        <div class="sidebar-sub-panel firewall-sub-panel flex-grow-firewall">
+                            <div class="panel-header">
+                                <h3>🚫 ACTIVE FIREWALL BLOCKS</h3>
+                                <span class="count-badge" id="firewall-count">0 IP(s)</span>
+                            </div>
+                            <div class="registry-container">
+                                <ul id="blocked-ip-list" class="blocked-list">
+                                    <li class="empty-list-placeholder">No active IP drops in firewall</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Column 3 (Right - Standalone): ChatGPT Operator Chat Console -->
+            <section class="main-right glass-panel chat-console-standalone-panel chat-panel-layout-side">
+                <div class="panel-header" style="flex-direction: row; justify-content: space-between; align-items: center; display: flex; width: 100%;">
+                    <div>
+                        <h2>💬 CHATGPT COMMAND CONSOLE</h2>
+                        <span class="panel-subtitle">Issue natural language directives to the coordinator</span>
+                    </div>
+                    <button class="panel-toggle-btn" onclick="toggleRightPanel()" title="Collapse chat pane">▶</button>
+                </div>
+                
+                <div class="chat-container">
+                    <div id="chat-messages" class="message-area">
+                        <!-- Hello message -->
+                        <div class="chat-bubble assistant">
+                            <div class="bubble-sender">
+                                <span class="avatar-icon">🤖</span>
+                                CREW_COORDINATOR
+                            </div>
+                            <div class="bubble-content">
+                                Hello! I am the **Crew Coordinator**. I bridge you directly to the automated incident response agents. 
+                                
+                                You can ask me questions or command the team in plain English, or click the quick suggestions below.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick suggestions chips -->
+                    <div class="chat-suggestions">
+                        <span class="suggestion-chip" onclick="clickSuggestion('Show status')">📊 Status</span>
+                        <span class="suggestion-chip" onclick="clickSuggestion('List active processes')">⚙️ Processes</span>
+                        <span class="suggestion-chip" onclick="clickSuggestion('List blocked IPs')">🚫 Blocked</span>
+                        <span class="suggestion-chip" onclick="clickSuggestion('Run forensic scan')">🕵️‍♂️ Forensics</span>
+                    </div>
+                    
+                    <div class="chat-input-area">
+                        <div class="chat-input-wrapper">
+                            <span class="input-prompt">$</span>
+                            <input type="text" id="chat-input" placeholder="Ask or command the crew... (Enter to send)" onkeydown="checkChatInput(event)">
+                        </div>
+                        <button class="btn btn-send" onclick="sendChatMessage()">
+                            <span class="send-icon">🚀</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
