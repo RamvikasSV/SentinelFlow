@@ -21,6 +21,13 @@ class AppSettings(BaseModel):
     ssh_username: str = Field(default="")
     ssh_password: str = Field(default="")
     ssh_key_path: str = Field(default="")
+
+    # ── Ported from Lhedge (send_mail.py) ── Email notification settings ──────
+    email_sender:   str = Field(default="")       # e.g. yourname@gmail.com
+    email_password: str = Field(default="")       # Gmail App Password (16 chars)
+    email_receiver: str = Field(default="")       # where to send reports (can be same as sender)
+    smtp_host:      str = Field(default="smtp.gmail.com")
+    smtp_port:      int = Field(default=465)      # SSL port
     
     # Logs directory
     log_dir: str = Field(default="logs")
@@ -43,7 +50,13 @@ settings = AppSettings(
     ssh_username=os.getenv("SSH_USERNAME", ""),
     ssh_password=os.getenv("SSH_PASSWORD", ""),
     ssh_key_path=os.getenv("SSH_KEY_PATH", ""),
-    log_dir=os.getenv("LOG_DIR", "logs")
+    log_dir=os.getenv("LOG_DIR", "logs"),
+    # Lhedge email notifier
+    email_sender=os.getenv("EMAIL_SENDER", ""),
+    email_password=os.getenv("EMAIL_PASSWORD", ""),
+    email_receiver=os.getenv("EMAIL_RECEIVER", ""),
+    smtp_host=os.getenv("SMTP_HOST", "smtp.gmail.com"),
+    smtp_port=int(os.getenv("SMTP_PORT", "465")),
 )
 
 # Ensure logs directory exists

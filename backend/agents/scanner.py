@@ -25,6 +25,12 @@ class LogScannerAgent:
             r"sudo:\s+(\S+)\s+:\s+command not allowed\s+;\s+TTY=.*?;\s+COMMAND=(.*)"
         )
         
+        # ── Ported from Lhedge (detect_failed_password.sh) ──────────────────────
+        # Detects password changes: 'passwd[1234]: password changed for alice'
+        self.password_change_pattern = re.compile(
+            r"passwd(?:\[\d+\])?:?\s+password changed for (\S+)"
+        )
+        
         # Nginx access log parser: 127.0.0.1 - - [datetime] "GET /path HTTP/1.1" 200 size
         self.nginx_pattern = re.compile(
             r"^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - - \[.*?\] \"(\S+) (.*?) HTTP/.*?\s+(\d{3})\s+(\d+)"
@@ -143,6 +149,20 @@ class LogScannerAgent:
                     message=f"Unauthorized root sudo attempt by user '{username}': {command}",
                     alert_type="sudo_auth_fail",
                     details={"user": username, "command": command, "line": line},
+                    severity="medium"
+                )
+                return
+
+            # ── Ported from Lhedge (detect_failed_password.sh) ───────────────────
+            # Check Password Changes — possible insider threat or post-compromise pivot
+            match_pwd = self.password_change_pattern.search(line)
+            if match_pwd:
+                username = match_pwd.group(1)
+                await self._trigger_alert(
+                    ip="127.0.0.1",  # Password changes are always local
+                    message=f"Password changed for user '{username}' — possible insider threat or post-compromise credential reset",
+                    alert_type="password_change",
+                    details={"user": username, "line": line},
                     severity="medium"
                 )
                 return

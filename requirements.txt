@@ -5,3 +5,7 @@ paramiko>=3.4.0
 google-genai>=0.3.0
 python-dotenv>=1.0.1
 pydantic>=2.7.4
+# ── Ported from Lhedge (HPE CTY) ──────────────────────────────────────────────
+aiohttp>=3.9.0          # GeoIP lookup (async HTTP, replaces geoiplookup bash call)
+watchdog>=4.0.0         # Real-time filesystem monitoring (replaces detect_malware.py watchdog)
+reportlab>=4.2.0        # PDF forensic report generation (replaces python-docx DOCX reports)

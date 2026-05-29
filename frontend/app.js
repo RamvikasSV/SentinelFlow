@@ -12,6 +12,7 @@ const firewallCount = document.getElementById("firewall-count");
 const targetModeVal = document.getElementById("target-mode-val");
 const processTableBody = document.getElementById("process-table-body");
 const connectionsTableBody = document.getElementById("connections-table-body");
+const registeredUsersList = document.getElementById("registered-users-list");
 
 let recentBlockedIPs = new Set();
 
@@ -20,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     connectWebSocket();
     // Query initial state
     fetchSystemState();
+    fetchUsers();
     
     // Apply default snap layout
     applySnapLayout("3-col");
@@ -82,6 +84,86 @@ async function fetchSystemState() {
         }
     } catch (e) {
         console.error("Error fetching system state:", e);
+    }
+}
+
+async function fetchUsers() {
+    try {
+        const res = await fetch("/api/users");
+        if (res.ok) {
+            const users = await res.json();
+            updateUsersUI(users);
+        }
+    } catch (e) {
+        console.error("Error fetching registered recipients:", e);
+    }
+}
+
+function updateUsersUI(users) {
+    if (!registeredUsersList) return;
+    registeredUsersList.innerHTML = "";
+    if (users.length === 0) {
+        registeredUsersList.innerHTML = '<li class="empty-list-placeholder">No recipients registered. Falling back to default .env recipient.</li>';
+    } else {
+        users.forEach(u => {
+            const li = document.createElement("li");
+            li.className = "user-item";
+            const dateStr = u.created_at ? new Date(u.created_at).toLocaleString() : "Unknown";
+            li.innerHTML = `
+                <div class="user-info">
+                    <span class="user-name">${u.name}</span>
+                    <span class="user-email">${u.email}</span>
+                    <span class="user-meta">Registered: ${dateStr}</span>
+                </div>
+                <button class="btn-delete" onclick="deleteUser('${u.email}')">DELETE</button>
+            `;
+            registeredUsersList.appendChild(li);
+        });
+    }
+}
+
+async function handleRegisterUser() {
+    const nameInput = document.getElementById("reg-name");
+    const emailInput = document.getElementById("reg-email");
+    if (!nameInput || !emailInput) return;
+    
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim();
+    if (!name || !email) return;
+
+    try {
+        const res = await fetch("/api/users", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name, email })
+        });
+        if (res.ok) {
+            addSystemLine(`[USER ACTION] Registered new notification recipient: ${name} (${email})`);
+            nameInput.value = "";
+            emailInput.value = "";
+            fetchUsers();
+        } else {
+            const data = await res.json();
+            alert(`Error registering recipient: ${data.detail || 'Invalid email or duplicate registration'}`);
+        }
+    } catch (e) {
+        console.error("Error registering user:", e);
+    }
+}
+
+async function deleteUser(email) {
+    try {
+        const res = await fetch(`/api/users/${encodeURIComponent(email)}`, {
+            method: "DELETE"
+        });
+        if (res.ok) {
+            addSystemLine(`[USER ACTION] Removed notification recipient: ${email}`);
+            fetchUsers();
+        }
+    } catch (e) {
+        console.error("Error deleting recipient:", e);
     }
 }
 

@@ -225,12 +225,12 @@ class CrewCoordinatorAgent:
         
         if "unblock" in msg:
             return {"action": "unblock_ip", "ip": target_ip}
+        elif "blocked" in msg or "firewall" in msg:
+            return {"action": "list_blocked"}
         elif "block" in msg:
             return {"action": "block_ip", "ip": target_ip}
         elif "status" in msg or "health" in msg or "agents" in msg:
             return {"action": "get_status"}
-        elif "blocked" in msg or "firewall" in msg:
-            return {"action": "list_blocked"}
         elif "process" in msg or "ps" in msg:
             return {"action": "list_processes"}
         elif "incident" in msg or "alert" in msg or "report" in msg or "history" in msg:

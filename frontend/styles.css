@@ -1550,3 +1550,75 @@ pre code {
     font-size: 10px;
     color: #cbd5e1;
 }
+
+/* User registry styles */
+.user-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.cyber-input {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(0, 242, 254, 0.15);
+    border-radius: 6px;
+    color: #fff;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-family: var(--font-sans);
+    transition: all 0.25s ease;
+}
+.cyber-input:focus {
+    border-color: var(--color-cyan);
+    box-shadow: 0 0 8px var(--color-cyan-glow);
+    outline: none;
+}
+.user-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.user-item {
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    padding: 10px 12px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    animation: fadeInSlide 0.25s ease forwards;
+}
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.user-name {
+    font-weight: 700;
+    color: #fff;
+}
+.user-email {
+    font-family: var(--font-mono);
+    color: var(--color-cyan);
+    font-size: 10px;
+    text-shadow: 0 0 5px rgba(0, 242, 254, 0.2);
+}
+.user-meta {
+    font-size: 9px;
+    color: var(--color-text-muted);
+}
+.btn-delete {
+    background: none;
+    border: none;
+    color: var(--color-red);
+    font-size: 9.5px;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 4px;
+    transition: all 0.2s ease;
+}
+.btn-delete:hover {
+    color: #fff;
+    text-shadow: 0 0 5px var(--color-red);
+}

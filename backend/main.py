@@ -14,6 +14,9 @@ from backend.agents.classifier import ThreatClassifierAgent
 from backend.agents.forensics import ForensicInvestigatorAgent
 from backend.agents.response import ResponseAgent
 from backend.agents.coordinator import CrewCoordinatorAgent
+from backend.agents.watchdog_agent import WatchdogFilesystemAgent  # Ported from Lhedge
+from backend.notifier import ForensicNotifier                       # Ported from Lhedge
+from backend.user_registry import UserRegistry
 
 # Initialize shared components
 server = None
@@ -23,6 +26,9 @@ classifier_agent = None
 forensics_agent = None
 response_agent = None
 coordinator_agent = None
+watchdog_agent = None    # Lhedge: real-time filesystem malware monitor
+notifier = None          # Lhedge: email forensic report notifier
+user_registry = None
 
 active_websockets: List[WebSocket] = []
 
@@ -31,8 +37,11 @@ async def lifespan(app: FastAPI):
     """
     Manages the startup and shutdown cycles of the security agent crew.
     """
-    global server, log_generator, scanner_agent, classifier_agent, forensics_agent, response_agent, coordinator_agent
+    global server, log_generator, scanner_agent, classifier_agent, forensics_agent, response_agent, coordinator_agent, watchdog_agent, notifier, user_registry
     
+    # Initialize User Registry
+    user_registry = UserRegistry()
+
     # 1. Initialize host server connection adapter
     if settings.system_mode == "ssh":
         try:
@@ -50,17 +59,21 @@ async def lifespan(app: FastAPI):
         log_generator = LogGenerator(server)
 
     # 2. Instantiate agents
-    scanner_agent = LogScannerAgent()
+    scanner_agent    = LogScannerAgent()
     classifier_agent = ThreatClassifierAgent()
-    forensics_agent = ForensicInvestigatorAgent(server)
-    response_agent = ResponseAgent(server)
+    forensics_agent  = ForensicInvestigatorAgent(server)
+    response_agent   = ResponseAgent(server)
     coordinator_agent = CrewCoordinatorAgent(server)
+    watchdog_agent   = WatchdogFilesystemAgent(server)  # Lhedge: malware filesystem watcher
+    notifier         = ForensicNotifier()               # Lhedge: email report notifier
 
     # 3. Start background processes
     await scanner_agent.start()
     await classifier_agent.start()
     await forensics_agent.start()
     await response_agent.start()
+    await watchdog_agent.start()  # Lhedge: filesystem malware watcher
+    await notifier.start()        # Lhedge: email forensic report notifier
     
     if settings.system_mode == "simulation" and log_generator:
         await log_generator.start()
@@ -87,6 +100,8 @@ async def lifespan(app: FastAPI):
     await classifier_agent.stop()
     await forensics_agent.stop()
     await response_agent.stop()
+    await watchdog_agent.stop()   # Lhedge: filesystem watcher
+    await notifier.stop()         # Lhedge: email notifier
     print("Incident Response Crew shut down cleanly.")
 
 
@@ -170,6 +185,44 @@ async def post_simulate_attack(attack_type: str):
     
     await log_generator.trigger_attack(attack_type)
     return {"status": "success", "message": f"Launched attack simulation: {attack_type}"}
+
+class UserRegistrationSchema(BaseModel):
+    name: str
+    email: str
+
+@app.get("/api/users")
+async def get_users():
+    """Returns the list of registered notification recipients."""
+    global user_registry
+    if not user_registry:
+        raise HTTPException(status_code=503, detail="User registry not initialized")
+    return user_registry.get_users()
+
+@app.post("/api/users")
+async def post_register_user(user: UserRegistrationSchema):
+    """Registers a new notification recipient."""
+    global user_registry
+    if not user_registry:
+        raise HTTPException(status_code=503, detail="User registry not initialized")
+    
+    success = user_registry.add_user(user.email, user.name)
+    if success:
+        return {"status": "success", "message": f"Successfully registered {user.name} ({user.email})"}
+    else:
+        raise HTTPException(status_code=400, detail="Invalid email address or recipient already registered")
+
+@app.delete("/api/users/{email}")
+async def delete_register_user(email: str):
+    """Deletes a registered recipient by email."""
+    global user_registry
+    if not user_registry:
+        raise HTTPException(status_code=503, detail="User registry not initialized")
+    
+    success = user_registry.remove_user(email)
+    if success:
+        return {"status": "success", "message": f"Successfully removed recipient: {email}"}
+    else:
+        raise HTTPException(status_code=404, detail="Recipient not found")
 
 # WebSocket Endpoint
 @app.websocket("/ws")

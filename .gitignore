@@ -29,3 +29,6 @@ logs/
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# Local database registry files
+backend/registered_users.json

@@ -109,7 +109,7 @@ class ResponseAgent:
         await broker.publish(Event(
             event_type="remediation",
             source="response_agent",
-            severity="info",
+            severity=event.severity or "info",
             data={
                 "ip": ip,
                 "category": category,

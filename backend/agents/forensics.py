@@ -1,4 +1,5 @@
 import asyncio
+import aiohttp
 from typing import Dict, Any, List
 from backend.simulator import ServerAdapter
 from backend.broker import broker, Event
@@ -39,7 +40,7 @@ class ForensicInvestigatorAgent:
     async def _run_forensics(self, event: Event):
         ip = event.data.get("ip")
         category = event.data.get("category")
-        severity = event.data.get("severity")
+        severity = event.severity
         trigger_alert = event.data.get("trigger_alert", {})
         
         await broker.publish(Event(
@@ -48,7 +49,15 @@ class ForensicInvestigatorAgent:
             data={"text": f"Initiating live forensics on target server for IP: {ip}. Category: {category}."}
         ))
         
-        # Simulating analysis delay
+        # ── Ported from Lhedge (geoiplookup in detect_failed_login.sh) ──────
+        # Enrich attacker IP with geolocation data
+        geo_info = await self._geoip_lookup(ip)
+        if geo_info.get("country"):
+            await broker.publish(Event(
+                event_type="agent_thought",
+                source="forensics_investigator",
+                data={"text": f"GeoIP: {ip} traced to {geo_info.get('city', 'Unknown city')}, {geo_info.get('country', 'Unknown')} — ISP: {geo_info.get('isp', 'Unknown')}"}
+            ))
         await asyncio.sleep(1.5)
         
         # 1. Investigate running processes
@@ -140,6 +149,7 @@ class ForensicInvestigatorAgent:
             data={
                 "ip": ip,
                 "category": category,
+                "geo_info": geo_info,   # ─ Lhedge GeoIP enrichment
                 "findings": {
                     "processes": suspicious_processes,
                     "sockets": suspicious_sockets,
@@ -149,3 +159,39 @@ class ForensicInvestigatorAgent:
                 "trigger_classification": event.data
             }
         ))
+
+    # ── Ported from Lhedge (geoiplookup in detect_failed_login.sh) ────────
+    async def _geoip_lookup(self, ip: str) -> Dict[str, Any]:
+        """Enriches an IP with geolocation data via the free ip-api.com REST API.
+        Returns an empty dict for private/loopback IPs or on network failure.
+        No API key required. Rate limit: 45 req/min (sufficient for forensic use).
+        """
+        # Skip private/loopback IPs — geoip makes no sense for these
+        private_prefixes = ("127.", "10.", "192.168.", "172.16.", "172.17.",
+                            "172.18.", "172.19.", "172.20.", "172.21.", "172.22.",
+                            "172.23.", "172.24.", "172.25.", "172.26.", "172.27.",
+                            "172.28.", "172.29.", "172.30.", "172.31.", "unknown")
+        if not ip or any(ip.startswith(p) for p in private_prefixes):
+            return {"country": "Local/Private", "city": "N/A", "isp": "Internal Network"}
+
+        try:
+            url = f"http://ip-api.com/json/{ip}?fields=status,country,countryCode,regionName,city,isp,org,lat,lon"
+            async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=5)) as session:
+                async with session.get(url) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        if data.get("status") == "success":
+                            return {
+                                "country": data.get("country", "Unknown"),
+                                "country_code": data.get("countryCode", ""),
+                                "region": data.get("regionName", "Unknown"),
+                                "city": data.get("city", "Unknown"),
+                                "isp": data.get("isp", "Unknown"),
+                                "org": data.get("org", ""),
+                                "lat": data.get("lat"),
+                                "lon": data.get("lon")
+                            }
+        except Exception:
+            pass  # Network failure — graceful fallback
+
+        return {"country": "Unknown", "city": "Unknown", "isp": "Unknown"}
